@@ -91,32 +91,35 @@ init();
 const clearBookmarks = function () {
   localStorage.clear('bookmarks');
 };
-export const uploadRecipe = async function (NewRecipe) {
+export const uploadRecipe = async function (newRecipe) {
   try {
-    const ingredients = Object.entries(NewRecipe)
+    const ingredients = Object.entries(newRecipe)
       .filter(entry => entry[0].startsWith('ingredient') && entry[1] !== '')
       .map(ing => {
         const ingArr = ing[1].split(',').map(el => el.trim());
-        if (ingArr.length !== 3) {
-          console.log('error333');
-          throw new Error('Please enter ingredients in the correct format:)');
-        }
-
+        if (ingArr.length !== 3)
+          throw new Error('Please enter ingredients in the correct format :)');
         const [quantity, unit, description] = ingArr;
         return { quantity: quantity ? +quantity : null, unit, description };
       });
+
     const recipe = {
-      title: NewRecipe.title,
-      publisher: NewRecipe.publisher,
-      source_url: NewRecipe.sourceUrl,
-      servings: +NewRecipe.servings,
-      cooking_time: +NewRecipe.cookingTime,
+      id: Date.now().toString(),
+      title: newRecipe.title,
+      publisher: newRecipe.publisher,
+      source_url: newRecipe.sourceUrl,
+      servings: +newRecipe.servings,
+      cooking_time: +newRecipe.cookingTime,
       ingredients,
-      image_url: NewRecipe.image,
+      image_url: newRecipe.image,
     };
-    const data = await AJAX(`${API_URL}?key=${KEY}`, recipe);
-    state.recipe = creatRecipeObject(data);
-    addBookmarks(state.recipe);
+
+    const savedRecipes = JSON.parse(localStorage.getItem('myRecipes')) || [];
+    savedRecipes.push(recipe);
+    localStorage.setItem('myRecipes', JSON.stringify(savedRecipes));
+
+    state.recipe = recipe;
+    addBookmarks(recipe);
   } catch (err) {
     throw err;
   }
