@@ -10,8 +10,9 @@
   "author": "Amr Ali",
   "license": "ISC",
   "devDependencies": {
+    "@parcel/transformer-sass": "^2.16.0",
     "parcel": "^2.16.0",
-    "sass": "^1.26.10"
+    "sass": "^1.93.2"
   },
   "dependencies": {
     "core-js": "^3.46.0",
